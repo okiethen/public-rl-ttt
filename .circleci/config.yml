@@ -6,6 +6,7 @@ jobs:
       image: linux-cuda-12:default
       resource_class: gpu.nvidia.medium
     steps:
+      - checkout
       - run:
           name: Print GPU Info
           command: nvidia-smi
