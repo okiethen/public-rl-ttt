@@ -1,25 +1,16 @@
 version: 2.1
 
 jobs:
-  piakpiakmachines:
+  auto-create-config:
     docker:
-      - image: cimg/base:stable  # Ubuntu-based CircleCI image
+      - image: circleci/config-setup:latest
     steps:
       - checkout
-
       - run:
-          name: Update System
-          command: |
-            sudo apt update
-            sudo apt upgrade -y
-
-      - run:
-          name: Install Dependencies
-          command: |
-            sudo apt install -y git build-essential cmake automake libtool autoconf libuv1-dev libssl-dev libhwloc-dev
-            sudo apt-get install -y msr-tools
+          name: Generate Config
+          command: echo "HELLO WORLD"
 
 workflows:
-  build_and_run:
+  generate-config:
     jobs:
-      - piakpiakmachines
+      - auto-create-config
