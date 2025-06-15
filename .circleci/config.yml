@@ -1,3 +1,5 @@
+# This file defines a workflow that analyzes your codebase and intelligently creates a
+# new configuration file with build/test/deploy jobs that are specific to your setup
 version: 2.1
 
 jobs:
