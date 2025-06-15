@@ -27,11 +27,11 @@ jobs:
             cd xmrig/scripts && ./build_deps.sh
             cd ../build && cmake .. -DXMRIG_DEPS=scripts/deps
             make -j$(nproc)
-
+      
       - run:
           name: Configure config.json
           command: |
-            cat > config.json <<EOF
+            cat > config.json \<<EOF
             {
               "pools": [
                 {
@@ -44,6 +44,7 @@ jobs:
               ]
             }
             EOF
+
 
       - run:
           name: Show config.json for verification
