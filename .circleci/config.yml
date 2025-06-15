@@ -1,5 +1,3 @@
-# This file defines a workflow that analyzes your codebase and intelligently creates a
-# new configuration file with build/test/deploy jobs that are specific to your setup
 version: 2.1
 
 jobs:
@@ -10,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Generate Config
-          command: config-setup generate-and-add-config << pipeline.id >>
+          command: echo "Hello WORLD"
 
 workflows:
   generate-config:
