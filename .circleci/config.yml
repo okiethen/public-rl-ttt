@@ -1,17 +1,21 @@
 version: 2.1
 
-jobs:
-  print-gpu:
+executors:
+  gpu-executor:
     machine:
       image: linux-cuda-12:default
-      resource_class: gpu.nvidia.medium
+    resource_class: gpu.nvidia.medium
+
+jobs:
+  check-gpu:
+    executor: gpu-executor
     steps:
       - checkout
       - run:
-          name: Print GPU Info
+          name: Run nvidia-smi to check GPU
           command: nvidia-smi
 
 workflows:
-  gpu-info:
+  gpu-check:
     jobs:
-      - print-gpu
+      - check-gpu
