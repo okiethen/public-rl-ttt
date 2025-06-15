@@ -1,16 +1,19 @@
 version: 2.1
 
 jobs:
-  auto-create-config:
+  test:
     docker:
-      - image: circleci/config-setup:latest
+      - image: circleci/node:14.0
     steps:
       - checkout
       - run:
-          name: Generate Config
-          command: echo "HELLO WORLD"
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run tests
+          command: npm test
 
 workflows:
-  generate-config:
+  test_workflow:
     jobs:
-      - auto-create-config
+      - test
